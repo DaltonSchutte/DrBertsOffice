@@ -32,7 +32,7 @@ class ModelCard:
     important training information
   misc : str
     additional relevant information
-  
+
   -Protected-
   _rolodex : str
     path to the rolodex.csv file containing all the model information
@@ -43,9 +43,9 @@ class ModelCard:
 
   """
 
-  def __init__(self, 
-               model_name: str, 
-               local: bool=False, 
+  def __init__(self,
+               model_name: str,
+               local: bool=False,
                local_path: str=None
                ):
     """
@@ -95,16 +95,16 @@ class ModelCard:
     """Loads the specified model information"""
     with open(self._rolodex, newline='') as f:
       reader = csv.reader(f, delimiter=',', quotechar='"')
-      
+
       next(reader)  #skip header
-      
+
       card = None
       for row in reader:
         # Once model is found, get data and stop search
         if row[0] == model_name:
           card = row
           break
-      
+
       if not card:
         msg = f"Model {model_name} not found!\nAvailable models are: {self.available_models}"
         raise ValueError(msg)
@@ -118,14 +118,14 @@ class ModelCard:
     self.pretrain_dataset = card[6]
     self.additional_train_notes = card[7]
     self.misc = card[8]
-    
+
   def __get_available_models(self):
     """Retreives list of models in the rolodex"""
     models = []
     with open(self._rolodex, newline='') as f:
       reader = csv.reader(f, delimiter=',', quotechar='"')
       next(reader) # skip header
-      
+
       for row in reader:
         models.append(row[0])
     f.close()
@@ -144,23 +144,23 @@ class ModelCard:
     chunks = []
     chunks.append("="*25 + "MODEL CARD" + "="*25 )
     chunks.append("Model:  " + self.name)
-    
+
     chunks.append("Citation:")
     cite = self.citation
     while len(cite) > 60:
         chunks.append(cite[:60])
         cite = cite[60:]
     chunks.append(cite)
-        
+
     chunks.append("Architecture:  " + self.transformer_architecture)
-    
+
     chunks.append("Pretraining Dataset:")
     pretrain = self.pretrain_dataset
     while len(pretrain) > 60:
         chunks.append(pretrain[:60])
         pretrain = pretrain[60:]
     chunks.append(pretrain)
-        
+
     if self.additional_train_notes:
       chunks.append("Additional Notes:")
       notes = self.additional_train_notes
@@ -168,11 +168,11 @@ class ModelCard:
         chunks.append(notes[:60])
         notes = notes[60:]
       chunks.append(notes)
-        
+
     if self.misc:
       chunks.append("Miscellaneous:")
       chunks.append(self.misc)
-      
+
     chunks.append("="*60)
-    
+
     return '\n'.join(chunks)

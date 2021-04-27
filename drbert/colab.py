@@ -7,7 +7,7 @@ from google.colab import drive
 class ColabLink:
   """Links Colab Notebook to Google Drive
   Provides collected interface to connect to your drive,
-  load data, save data, and interact with the specified 
+  load data, save data, and interact with the specified
   directory
 
   Attributes
@@ -30,7 +30,7 @@ class ColabLink:
     lists the contents of the directory at paths[name]
   """
 
-  def __init__(self, 
+  def __init__(self,
                base_dir: str,
                ):
     """
@@ -75,7 +75,7 @@ class ColabLink:
     """Sets the working directory"""
     print("Setting working directory...")
     dir_path = os.path.join('/content/gdrive', self.base_dir)
-    
+
     self.__check_path(dir_path)
 
     self.__working_dir = dir_path
@@ -84,8 +84,8 @@ class ColabLink:
     print(f"Working directory can be accessed using 'work' in class call")
     print("[Working directory set]")
 
-  def add_path(self, 
-               path: str, 
+  def add_path(self,
+               path: str,
                name: str,
                overwrite: bool=False
                ):

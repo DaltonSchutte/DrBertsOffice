@@ -1,11 +1,11 @@
 from transformers import (
-    BertForMultipleChoice, 
+    BertForMultipleChoice,
     BertForQuestionAnswering,
-    BertForTokenClassification, 
+    BertForTokenClassification,
     BertForSequenceClassification,
     BertTokenizerFast
 )
-                          
+
 
 class Model:
   """Container for BERT model and tokenizer
@@ -25,7 +25,7 @@ class Model:
   dropout : float=0.03
     dropout value for the BERT outputs before going to the head
   bert :   transformers.models.bert.modeling_bert
-    Huggingface BERT model for specified task initiated 
+    Huggingface BERT model for specified task initiated
     using BertFor{task}.from_pretrained({weight_path})
   tokenizer : transformers.models.bert.tokenization_bert_fast.BertTokenizerFast
     Huggingface fast BERT tokenizer with additional tokens added as required
@@ -41,27 +41,19 @@ class Model:
   forward
     performs a forward pass using the instantiated BERT model
 
+  tokenize
+    tokenizes and prepares text for model, equivalent to Tokenizer(input)
+    *NOT* Tokenizer.tokenize(input)
+
   train
     sets bert attribute to training mode, computes gradients on forward pass
 
   eval
     sets bert attribute to evaluation mode, does not compute gradients on
     forward pass
-  
-  _get_model
-    initiates the appropriate BERT model based on the desired task
-
-  _get_tokenizer
-    initiates the appropriate tokenizer
-
-  _convert_model
-    NotImplemented, will convert between backends as desired
-
-  
-
   """
 
-  def __init__(self, 
+  def __init__(self,
                weight_path: str,
                model_backend: str,
                desired_backend: str,
@@ -70,6 +62,20 @@ class Model:
                dropout: float=0.03,
                **kwargs
                ):
+    """
+    Parameters
+    ----------
+    weight_path : str
+      path to the desired BERT weights (either local or via HuggingFace hub)
+    model_backend : str
+      the desired backend to be used {'PyTorch', 'TensorFlow'}
+    task : str
+      task to be fine-tuned for {'ner', 'rel_ex', 'seq_clf', 'mc', 'qa'}
+    num_labels : int
+      number of classes being predicted
+    dropout : float
+      dropout probability for BERT output before being sent to the task head
+    """
     self.weight_path = weight_path
     self.model_backend = model_backend
     assert desired_backend in ['PyTorch', 'TensorFlow']
@@ -85,16 +91,21 @@ class Model:
 
 
   @classmethod
-  def from_model_card(cls, 
-                      model_card: ModelCard, 
+  def from_model_card(cls,
+                      model_card: ModelCard,
                       desired_backend: str,
                       task: str,
                       num_labels: int,
                       dropout: float,
                       **kwargs
                       ):
-    """Loads the model using the ModelCard"""
-    
+    """Loads the model using the ModelCard
+    Parameters
+    ----------
+    model_card : ModelCard
+      class containing model information
+    """
+
     return cls(model_card.weight_path,
                model_card.backend,
                desired_backend,
@@ -103,9 +114,9 @@ class Model:
                dropout,
                **kwargs
                )
-  
+
   def _get_model(self):
-    """Makes appropriate head for the specified task"""
+    """Prepares desired BERT model for specified task"""
     if self.task == 'ner':
       self.bert = BertForTokenClassification.from_pretrained(self.weight_path,
                                                              num_labels=self.num_labels)
@@ -113,6 +124,7 @@ class Model:
       # TODO: Add special rel_ex for entity extraction
       self.bert = BertForSequenceClassification.from_pretrained(self.weight_path,
                                                                 num_outputs=self.num_labels)
+      # Resize to account for added {'<e1>', '</e1>', '<e2>', '</e2>'}
       self.bert.resize_token_embeddings(4)
     elif self.task == 'seq_clf':
       self.bert = BertForSequenceClassification.from_pretrained(self.weight_path,
@@ -127,6 +139,7 @@ class Model:
       raise NotImplementedError(f"{self.task} is not an implemented task, use ['ner', 'rel_ex', 'seq_clf', 'mc', 'qa']")
 
   def _get_tokenizer(self):
+    """Loads a fast tokenizer with additional tokens if required"""
     if self.task != 'rel_ex':
       self.tokenizer = BertTokenizerFast.from_pretrained(self.weight_path)
     else:
@@ -138,8 +151,8 @@ class Model:
                                                                                     ]
                                                         )
 
-  def __convert_model(self, 
-                      model_card: ModelCard, 
+  def __convert_model(self,
+                      model_card: ModelCard,
                       desired_backend: str
                       ):
     raise NotImplementedError("Feature forthcoming...")
@@ -153,8 +166,11 @@ class Model:
   def eval(self):
     self.bert.eval()
 
-  def forward(self, x):
-    return self.bert(x)
+  def forward(self, **kwargs):
+    return self.bert(kwargs)
 
-  def __call__(self, x):
-    return self.forward(x)
+  def __call__(self, **kwargs):
+    return self.forward(kwargs)
+
+  def tokenize(self, **kwargs):
+    return self.tokenizer(kwargs)
