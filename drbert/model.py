@@ -62,7 +62,6 @@ class Model:
                task: str,
                num_labels: int,
                dropout: float=0.03,
-               **kwargs
                ):
     """
     Parameters
@@ -85,7 +84,6 @@ class Model:
     self.task = task
     self.num_labels = num_labels
     self.dropout = dropout
-    self.kwargs = kwargs
 
     self._get_model()
     self._get_tokenizer()
@@ -169,10 +167,10 @@ class Model:
     self.bert.eval()
 
   def forward(self, **kwargs):
-    return self.bert(kwargs)
+    return self.bert(**kwargs)
 
   def __call__(self, **kwargs):
-    return self.forward(kwargs)
+    return self.forward(**kwargs)
 
   def tokenize(self, **kwargs):
     return self.tokenizer(**kwargs)
