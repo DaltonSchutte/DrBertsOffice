@@ -1,5 +1,3 @@
-"""Objects for connecting to colab"""
-
 import os
 
 from google.colab import drive
@@ -122,7 +120,10 @@ class ColabLink:
     is_file = os.path.isfile(path)
 
     if (not is_dir) and (not is_file):
-      raise OSError("Provided path is not a valid file or directory")
+      raise OSError(f"Provided path {path} is not a valid file or directory")
+
+  def __getitem__(self, key):
+    return self.paths[key]
 
   def list(self, name: str=None):
     """Lists the contents of the specified directory"""
