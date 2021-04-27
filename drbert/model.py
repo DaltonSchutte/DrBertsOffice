@@ -176,3 +176,6 @@ class Model:
 
   def tokenize(self, **kwargs):
     return self.tokenizer(**kwargs)
+
+  def parameters(self):
+      return self.bert.parameters()
