@@ -6,7 +6,7 @@ from transformers import (
     BertTokenizerFast
 )
 
-import ModelCard
+from cards import ModelCard
 
 
 class Model:
