@@ -175,4 +175,4 @@ class Model:
     return self.forward(kwargs)
 
   def tokenize(self, **kwargs):
-    return self.tokenizer(kwargs)
+    return self.tokenizer(**kwargs)
