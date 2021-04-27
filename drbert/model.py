@@ -6,6 +6,8 @@ from transformers import (
     BertTokenizerFast
 )
 
+import ModelCard
+
 
 class Model:
   """Container for BERT model and tokenizer
