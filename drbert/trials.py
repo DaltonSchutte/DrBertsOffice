@@ -299,10 +299,10 @@ class Trials:
     print("{:.4f} ({:.4f}, {:.4f})".format(mean, mean-dist, mean+dist))
 
   def _summarize(self):
-    recs = [v['recall'] for v in self.results.values()]
-    precs = [v['precision'] for v in self.results.values()]
-    f1s = [v['f1'] for v in self.results.values()]
-    losses = [v['loss'] for v in self.results.values()]
+    recs = [v['recall'] for v in self.results.values()] if isinstance(v, dict)
+    precs = [v['precision'] for v in self.results.values() if isinstance(v, dict)]
+    f1s = [v['f1'] for v in self.results.values() if isinstance(v, dict)]
+    losses = [v['loss'] for v in self.results.values() if isinstance(v, dict)]
 
     print("Loss Mean - 95% CI")
     self._print_stats(losses)
