@@ -170,10 +170,10 @@ class Model:
     return self.bert(**kwargs)
 
   def __call__(self, **kwargs):
-    return self.forward(**kwargs)
+    return self.bert(**kwargs)
 
   def tokenize(self, **kwargs):
     return self.tokenizer(**kwargs)
 
   def parameters(self):
-      return self.bert.parameters()
+    return self.bert.parameters()
