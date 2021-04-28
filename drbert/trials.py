@@ -331,7 +331,7 @@ class Trials:
       self._trial(i+1, seed)
       print('\n\n')
 
-    self.results.update({'total_runtime':time()-start})
+    self.results.update({'total_runtime':time()-_start})
     self._save_results()
     self._summarize()
     self._clean()
