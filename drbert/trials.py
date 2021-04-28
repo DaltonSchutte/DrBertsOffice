@@ -333,6 +333,7 @@ class Trials:
 
     self.results.update({'total_runtime':time()-_start})
     self._save_results()
-    self._summarize()
+    # TODO: Fix issues
+    # self._summarize()
     self._clean()
 
