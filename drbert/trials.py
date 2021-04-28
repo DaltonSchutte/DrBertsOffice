@@ -42,7 +42,7 @@ class Trials:
     specifies if a gpu, tpu, or cpu will be used
   results
     dictionary where each entry corresponds to the results from a single trial
-  optimizer 
+  optimizer
     PyTorch based optimization object
   scheduler
     learning rate scheduling object
@@ -55,16 +55,16 @@ class Trials:
 
   """
 
-  def __init__(self, 
+  def __init__(self,
                model,
-               task: str, 
-               data: dict, 
+               task: str,
+               data: dict,
                param_dict: dict,
                results_dir: str,
                outfile: str,
                id_to_tag: dict,
-               seeds: np.ndarray, 
-               device: str, 
+               seeds: np.ndarray,
+               device: str,
                ):
     """
     Parameters
@@ -137,7 +137,7 @@ class Trials:
 
     self.labels = labels[idx]
     self.preds = preds[idx]
-    
+
     params = {'y_true': self.labels,
               'y_pred': self.preds,
               'zero_division': 0,
@@ -240,7 +240,7 @@ class Trials:
 
   def _trial(self, num, seed):
     """Complete cycle of training and evaluation
-    
+
     Parameters
     ----------
     num : int
@@ -331,7 +331,7 @@ class Trials:
       self._trial(i+1, seed)
       print('\n\n')
 
-    self.results_dir.update({'total_runtime':time()-start})
+    self.results.update({'total_runtime':time()-start})
     self._save_results()
     self._summarize()
     self._clean()
