@@ -299,7 +299,7 @@ class Trials:
     print("{:.4f} ({:.4f}, {:.4f})".format(mean, mean-dist, mean+dist))
 
   def _summarize(self):
-    recs = [v['recall'] for v in self.results.values()] if isinstance(v, dict)
+    recs = [v['recall'] for v in self.results.values() if isinstance(v, dict)]
     precs = [v['precision'] for v in self.results.values() if isinstance(v, dict)]
     f1s = [v['f1'] for v in self.results.values() if isinstance(v, dict)]
     losses = [v['loss'] for v in self.results.values() if isinstance(v, dict)]
