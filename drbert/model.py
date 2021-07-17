@@ -85,10 +85,8 @@ class Model:
     self.num_labels = num_labels
     self.dropout = dropout
 
-    self._get_model()
     self._get_tokenizer()
-
-
+    self._get_model()
 
   @classmethod
   def from_model_card(cls,
@@ -125,7 +123,7 @@ class Model:
       self.bert = BertForSequenceClassification.from_pretrained(self.weight_path,
                                                                 num_labels=self.num_labels)
       # Resize to account for added {'<e1>', '</e1>', '<e2>', '</e2>'}
-      self.bert.resize_token_embeddings(4)
+      self.bert.resize_token_embeddings(len(self.tokenizer))
     elif self.task == 'seq_clf':
       self.bert = BertForSequenceClassification.from_pretrained(self.weight_path,
                                                                 num_labels=self.num_labels)
