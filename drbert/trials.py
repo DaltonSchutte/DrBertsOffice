@@ -209,11 +209,16 @@ class Trials:
   def _eval(self):
     """Evaluation process"""
     test_loss = 0
+    test_in_ids = []
     test_preds = []
+    test_preds_seq = []
     test_labels = []
+    test_labels_seq = []
 
     self.model.eval()
     for item in self.test_loader:
+      test_in_ids.append(item['input_ids'].cpu().numpy().tolist())
+      test_labels_seq.append(item['labels'].cpu().numpy().tolist())
       test_labels += item['labels'].detach().cpu().numpy().flatten().tolist()
       item = {k: v.to(self.device) for k, v in item.items()}
       item.update({'return_dict': True})
@@ -226,6 +231,7 @@ class Trials:
         d = 1
 
       pred = torch.argmax(F.softmax(logit, dim=d), dim=d)
+      test_labels_seq.append(pred.cpu().numpy().tolist())
       test_loss += loss.cpu().item()
       test_preds += pred.detach().cpu().numpy().flatten().tolist()
 
@@ -235,6 +241,10 @@ class Trials:
           "Mean pred value: {:.4f}\n".format(np.mean(test_preds)),
           "Loss: {:.6f}\n".format(test_loss)
           )
+    self.test_out = {'input_ids': test_in_ids,
+                     'labels': test_labels_seq,
+                     'preds': test_preds_seq
+                     }
 
     return rec, prec, f1, clf_report, test_loss
 
