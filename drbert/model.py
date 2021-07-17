@@ -123,15 +123,15 @@ class Model:
     elif self.task == 'rel_ex':
       # TODO: Add special rel_ex for entity extraction
       self.bert = BertForSequenceClassification.from_pretrained(self.weight_path,
-                                                                num_outputs=self.num_labels)
+                                                                num_labels=self.num_labels)
       # Resize to account for added {'<e1>', '</e1>', '<e2>', '</e2>'}
       self.bert.resize_token_embeddings(4)
     elif self.task == 'seq_clf':
       self.bert = BertForSequenceClassification.from_pretrained(self.weight_path,
-                                                                num_outputs=self.num_labels)
+                                                                num_labels=self.num_labels)
     elif self.task == 'mc':
       self.bert =  BertForMultipleChoice.from_pretrained(self.weight_path,
-                                                         num_outputs=self.num_labels)
+                                                         num_labels=self.num_labels)
     elif self.task == 'qa':
       self.bert = BertForQuestionAnswering.from_pretrained(self.weight_path,
                                                            num_labels=self.num_labels)
